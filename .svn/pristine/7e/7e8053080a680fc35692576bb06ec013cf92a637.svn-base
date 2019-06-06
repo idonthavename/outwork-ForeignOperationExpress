@@ -1,0 +1,60 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+//Auth::routes();
+
+Route::get('/','Index\IndexController@index');
+Route::get('/login','Index\LoginController@show')->name('login');
+Route::post('/login/do','Index\LoginController@login');
+
+Route::get('/register/one/{type}','Index\RegisterController@stepOne')->where('type','personal|company');
+Route::post('/register/one/{type}/do','Index\RegisterController@postStepOne')->where('type','personal|company');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/register/two/{type}','Index\RegisterController@stepTwo')->where('type','personal|company');
+    Route::post('/register/two/{type}/do','Index\RegisterController@postStepTwo')->where('type','personal|company');
+
+    Route::get('/register/three/{type}','Index\RegisterController@stepThree')->where('type','personal|company');
+    Route::post('/register/three/{type}/do','Index\RegisterController@postStepThree')->where('type','personal|company');
+
+    Route::get('/register/four/{type}','Index\RegisterController@stepFour')->where('type','personal|company');
+    Route::post('/register/four/{type}/do','Index\RegisterController@postStepFour')->where('type','personal|company');
+
+    Route::get('/register/five/{type}','Index\RegisterController@stepFive')->where('type','personal|company');
+    Route::post('/register/five/{type}/do','Index\RegisterController@postStepFive')->where('type','personal|company');
+
+    Route::get('/register/six/{type}','Index\RegisterController@stepSix')->where('type','personal|company');
+    Route::post('/register/six/{type}/do','Index\RegisterController@postStepSix')->where('type','personal|company');
+
+    Route::get('/register/two/{type}/sendEmail','Index\RegisterController@sendEmail')->where('type','personal|company');
+});
+
+Route::group(['prefix'=>'user','middleware'=>'auth','namespace' => 'Admin'],function () {
+    Route::get('/','IndexController@index');
+    Route::get('/logout','IndexController@logout');
+    Route::get('/reset','IndexController@reset');
+    Route::post('/reset/do','IndexController@postReset');
+
+    Route::get('/list/{type?}','ListController@index');
+    Route::get('/list/{type?}/get','ListController@getData');
+
+    Route::resource('/receiver', 'ReceiverController');
+    Route::resource('/sender', 'SenderController');
+});
+
+
+Route::get('/home', 'HomeController@index')->name('home');

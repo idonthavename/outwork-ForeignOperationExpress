@@ -1,0 +1,131 @@
+<style>
+    .obconts {  width: 360px;  position: relative;  margin-top: 26px;  height: 200px;  border: 2px dotted #000;  border-radius: 15px;  float: left;  }
+    .obconts p {  font-size: 18px;  font-weight: 700;  color: #000;  padding-left: 15px;  padding-top: 5px;  margin: 0 0 15px;  }
+    .obconts input[class=uploadfile] {  width: 106px;  height: 41px;  position: relative;  z-index: 9;  opacity: 0;  top: -37px;  margin-left: 270px;  left: -13px;  }
+    .obconts label {  position: absolute;  background: #232323;  display: inline-block;  color: #ffde00;  width: 90px;  height: 41px;  line-height: 45px;  text-align: center;  top: 123px;  left: 256px;  border-radius: 5px;  }
+    input[type=file] {  display: block;  }
+</style>
+<div class="layui-card">
+    <div class="layui-card-header">证件上传</div>
+    <div class="layui-card-body">
+        <div class="layui-form-item layui-row">
+            <div class="layui-col-md12 content">
+                <p style="color:#000;font-size: 15px;">温馨提示：为清关顺利，请上传有效、清晰的身份证原件正反面照片。<br>1、身份证信息须与收件人信息一致<br>2、每张照片大小不超过4M<br>如上传不成功，请尝试：<br>1、调高照片亮度<br>2、裁剪多余背景且露出证件四角</p>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md12 content">
+                <input type="radio" name="uploadType" value="1" title="1.寄件人上传">
+                <input type="radio" name="uploadType" value="2" title="2.收件人上传">
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md12 content">
+                <div class="layui-form-item">
+                    <div class="layui-col-xs12 layui-col-md4 obconts">
+                        <p>身份证国徽面</p>
+                        <img src="{{$data['id_card_front'] ? '/uploads/'.$data['id_card_front'] : 'http://ores.meiquick.com/webuser/Member/images/pho_front.png'}}" id="fileimage2" style="width: 230px;height: 120px;margin-left: 15px;">
+                        <input type="file" name="id_card_front" class="uploadfile" id="front" accept="image/jpeg,image/jpg,image/png" atd="2" onclick="fileOnchange(this)">
+                        <label>上传图片</label>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-md4 layui-col-md-offset2 obconts">
+                        <p>身份证头像面</p>
+                        <img src="{{$data['id_card_back'] ? '/uploads/'.$data['id_card_back'] : 'http://ores.meiquick.com/webuser/Member/images/pho_back.png'}}" id="fileimage1" style="width: 230px;height: 120px;margin-left: 15px;">
+                        <input type="file" name="id_card_back" class="uploadfile" id="back" accept="image/jpeg,image/jpg,image/png" atd="1" onclick="fileOnchange(this)">
+                        <label>上传图片</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{asset('/js/jquery-1.8.3.min.js')}}"></script>
+<script>
+    function fileOnchange(pid){
+        var atd = pid.getAttribute("atd");
+        // alert(atd);
+        var input = pid;
+
+        var res = document.getElementById("fileimage"+atd);
+        if(typeof FileReader==='undefined'){
+            res.innerHTML = "抱歉，你的浏览器不支持 FileReader";
+            input.setAttribute('disabled','disabled');
+        }else{
+            input.addEventListener('change',readFile,false);
+        }
+
+        //图片文件读取
+        function readFile(){
+            var file = this.files[0];
+            // console.log(file);
+            if(!/image\/\w+/.test(file.type)){
+                layer.open({
+                    type: 0,
+                    title: false,
+                    content: "文件必须为图片！"
+                });
+                return false;
+            }
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e){
+                res.src = this.result;  //赋值到src
+            }
+        }
+    }
+</script>
+<style>
+    .layui-table th{text-align: center;font-weight: bold;}
+    .layui-table .goods-word{font-size: 0.5rem;color: red;}
+    .layui-table .spec-input{width: 100px;display: inline;margin-left:10px;}
+</style>
+<div class="layui-card">
+    <div class="layui-card-header">快件信息</div>
+    <div class="layui-card-body">
+        <div class="layui-row">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>货品列表</th>
+                    <th>货品名称（中文）<br>
+                        <span class="goods-word">
+                        *不可写保健品等<br>
+                        非具体品名，需具体到鱼油等
+                        </span>
+                    </th>
+                    <th>英文品牌</th>
+                    <th>单价（美元）</th>
+                    <th>规格/容量</th>
+                    <th>数量</th>
+                    <th>是否套装</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>贤心</td>
+                    <td><input type="text" name="title" placeholder="请输入内容" autocomplete="on" class="layui-input"></td>
+                    <td><input type="text" name="title" placeholder="请输入内容" autocomplete="on" class="layui-input"></td>
+                    <td><input type="text" name="title" placeholder="" autocomplete="on" class="layui-input"></td>
+                    <td>
+                        <input type="text" name="title" autocomplete="on" class="layui-input spec-input">
+                        <input type="text" name="title" autocomplete="on" class="layui-input spec-input" placeholder="请输入单位">
+                    </td>
+                    <td><input type="text" name="title" autocomplete="on" class="layui-input"></td>
+                    <td><input type="checkbox" name="" title="发呆" lay-skin="primary"> </td>
+                    <td><input type="text" name="title" placeholder="可填写货号等信息" autocomplete="on" class="layui-input"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    layui.config({
+        base: '/js/admin/' //静态资源所在路径
+    }).use(['table', 'form'], function(){
+        var table = layui.table
+            ,form = layui.form;
+
+    });
+</script>

@@ -1,0 +1,150 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Line;
+use App\Product;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class LineController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('master.line.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $page = intval($request->post('page',10));
+        $limit = intval($request->post('limit',10));
+        $data = Line::offset(($page-1)*$limit)->limit($limit)->orderBy('order','DESC')->orderBy('created_at','DESC')->get();
+        $count = Line::count();
+        return response()->json(['status'=>200,'msg'=>'Success','data'=>$data,'count'=>$count]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request,[
+            'name'=>'required|between:1,50',
+            'channel'=>'required|between:1,50',
+            'content'=>'nullable|max:500',
+            'products'=>'required|array',
+            'ykg'=>'nullable|numeric',
+            'price'=>'required|array',
+            'overweight'=>'required|array',
+            'iupid'=>'nullable|string',
+            'order'=>'nullable|integer',
+            'remark'=>'nullable|string',
+            'isban'=>'nullable|string',
+            'print_template'=>'nullable|integer',
+        ]);
+
+        $post = $request->post();
+        $post['isban'] = isset($post['isban']) && $post['isban'] == 'on' ? 1 : 0;
+        $post['iupid'] = isset($post['iupid']) && $post['iupid'] == 'on' ? 1 : 0;
+        $post['ykg'] = number_format($post['ykg'],2,'.','');
+        $post['products'] = implode(',',$post['products']);
+        $post['price'] = json_encode($post['price']);
+        $post['overweight'] = json_encode($post['overweight']);
+        unset($post['_token']);
+
+        $id = intval($post['id']);
+        if ($id){
+            $update = Line::where('id',$id)->update($post);
+            if ($update){
+                return response()->json(['status'=>200,'msg'=>'保存成功',]);
+            }else{
+                return response()->json(['status'=>-100,'msg'=>'保存失败']);
+            }
+        }else{
+            $create = Line::create($post);
+            if ($create->id){
+                return response()->json(['status'=>200,'msg'=>'保存成功','data'=>$create]);
+            }else{
+                return response()->json(['status'=>-100,'msg'=>'保存失败']);
+            }
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $id = intval($id);
+        $data = Line::where('id',$id)->first();
+        if ($data['products']) $data['products'] = explode(',',$data['products']);
+        if ($data['price']) $data['price'] = json_decode($data['price'],true);
+        if ($data['overweight']) $data['overweight'] = json_decode($data['overweight'],true);
+        $products = Product::where('parent_id','0')->orderBy('order','DESC')->orderBy('created_at','DESC')->get();
+        $print_template = [
+            1=>['name'=>'模板1'],
+            2=>['name'=>'模板2'],
+        ];
+        return view('master.line.edit',['data'=>$data,'products'=>$products,'print_template'=>$print_template]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $id = intval($id);
+        if ($id){
+            $destroy = Line::destroy($id);
+            if ($destroy){
+                return response()->json(['status'=>200,'msg'=>'删除成功',]);
+            }else{
+                return response()->json(['status'=>-100,'msg'=>'删除失败']);
+            }
+        }else{
+            return response()->json(['status'=>-100,'msg'=>'抱歉，丢失参数']);
+        }
+    }
+}

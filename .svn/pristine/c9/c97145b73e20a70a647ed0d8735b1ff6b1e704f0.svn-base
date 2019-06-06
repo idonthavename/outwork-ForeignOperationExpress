@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Controllers\Index;
+
+use App\Content;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class IndexController extends Controller
+{
+    public function index(){
+        $output['banner'] = [1,2,3,4];
+        $output['partner'] = [1,2,3,4,5,6,7,8,9,10,11,12];
+        return view('index.index',$output);
+    }
+
+    public function service(){
+        $info = Content::where('type',1)->first();
+        $output['partner'] = [1,2,3,4,5,6,7,8,9,10,11,12];
+        $output['content'] = $info['content'];
+        return view('index.service',$output);
+    }
+
+    public function charge(){
+        $info = Content::where('type',2)->first();
+        $output['partner'] = [1,2,3,4,5,6,7,8,9,10,11,12];
+        $output['content'] = $info['content'];
+        return view('index.charge',$output);
+    }
+
+    public function about(){
+        $output['partner'] = [1,2,3,4,5,6,7,8,9,10,11,12];
+        return view('index.about',$output);
+    }
+}

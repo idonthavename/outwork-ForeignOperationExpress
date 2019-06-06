@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Http\Controllers\Index;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class RegisterController extends Controller
+{
+    private $nowStep;
+    private $titles;
+
+    public function __construct(){
+        $step =  strtolower(explode('/',url()->current())[4]);
+        $trans = ['one'=>1,'two'=>2,'three'=>3,'four'=>4,'five'=>5,'six'=>6];
+        $this->nowStep = $trans[$step];
+        $this->titles = ["填写注册信息","验证注册邮箱","完善个人信息","上传证件","签署授权","等待确认"];
+    }
+
+    public function stepOne(){
+        $output['nowStep'] = $this->nowStep;
+        $output['titles'] = $this->titles;
+        return view('index.register1',$output);
+    }
+
+    public function stepTwo(){
+        $output['nowStep'] = $this->nowStep;
+        $output['titles'] = $this->titles;
+        return view('index.register2',$output);
+    }
+
+    public function stepThree(){
+        $output['nowStep'] = $this->nowStep;
+        $output['titles'] = $this->titles;
+        return view('index.register3',$output);
+    }
+
+    public function stepFour(){
+        $output['nowStep'] = $this->nowStep;
+        $output['titles'] = $this->titles;
+        return view('index.register4',$output);
+    }
+
+    public function stepFive(){
+        $output['nowStep'] = $this->nowStep;
+        $output['titles'] = $this->titles;
+        return view('index.register5',$output);
+    }
+
+    public function stepSix(){
+        $output['nowStep'] = $this->nowStep;
+        $output['titles'] = $this->titles;
+        return view('index.register6',$output);
+    }
+}

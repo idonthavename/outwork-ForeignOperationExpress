@@ -1,0 +1,61 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateOrderTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('order', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('uid');
+            $table->string('system_order_no',50)->unique();
+            $table->string('user_order_no',50)->nullable();
+            $table->string('express_no',50)->nullable();
+            $table->unsignedInteger('line_id');
+            $table->string('s_name',20);
+            $table->string('s_phone',20);
+            $table->string('s_code',20);
+            $table->string('s_address',255);
+            $table->string('s_country',50);
+            $table->string('s_province',50);
+            $table->string('s_city',50);
+            $table->string('r_name',20);
+            $table->string('r_phone',20);
+            $table->unsignedTinyInteger('r_cre_type');
+            $table->string('r_cre_num',20);
+            $table->string('r_code',20)->nullable();
+            $table->string('r_province',50)->nullable();
+            $table->string('r_city',50)->nullable();
+            $table->string('r_town',50)->nullable();
+            $table->string('r_addressDetail',255);
+            $table->unsignedTinyInteger('upload_type')->default('0');
+            $table->string('id_card_front',200)->nullable();
+            $table->string('id_card_back',200)->nullable();
+            $table->string('depot',100);
+            $table->text('addons');
+            $table->decimal('money')->default('0.00');
+            $table->unsignedTinyInteger('iscare')->default('1');
+            $table->unsignedTinyInteger('status')->default('0');
+            $table->unsignedTinyInteger('print')->default('0');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('order');
+    }
+}

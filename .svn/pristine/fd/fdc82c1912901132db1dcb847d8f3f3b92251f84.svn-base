@@ -1,0 +1,55 @@
+@extends('common.header')
+
+@section('content')
+
+    <link href="{{ asset('css/register.css') }}" rel="stylesheet">
+    <style>.content{margin-top2rem;padding: 2rem;} .layui-btn-disabled{pointer-events: none;}</style>
+    <div id="banner">
+        <div class="banner-img">
+            <div class="layui-container">
+                <div class="banner-content">
+                    运单号查询
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-container">
+        <div class="content">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="300">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>运单号</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($orders as $val)
+                    <tr>
+                        <td>{{$val['system_order_no']}}</td>
+                        <td>{{$val['statusContent']}}</td>
+                        <td>
+                            <a class="layui-btn layui-btn-normal {{!$val['link'] ? 'layui-btn-disabled' : ''}}" href="{{$val['link']}}" target="_blank">物流信息</a>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @include('common.footer')
+
+    <script src="{{asset('js/jquery.form.js')}}"></script>
+    <script>
+        layui.use(['form'], function(){
+            var form = layui.form;
+
+        });
+
+    </script>
+@endsection

@@ -1,0 +1,924 @@
+﻿-- phpMyAdmin SQL Dump
+-- version 4.8.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: 2018-11-09 13:06:15
+-- 服务器版本： 5.7.14
+-- PHP Version: 7.2.2
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+--
+-- Database: `meizhong`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `addon`
+--
+
+CREATE TABLE `addon` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `money` decimal(8,2) NOT NULL DEFAULT '0.00',
+  `order` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `addon`
+--
+
+INSERT INTO `addon` (`id`, `name`, `money`, `order`, `created_at`, `updated_at`) VALUES
+(1, '美国-台湾线', '1.52', 0, '2018-09-14 08:33:59', '2018-09-14 08:38:11'),
+(2, '拍照服务', '3.30', 0, '2018-09-14 08:34:11', '2018-09-14 08:34:11'),
+(3, '退货服务', '4.02', 0, '2018-09-14 08:34:23', '2018-09-14 08:34:23'),
+(4, '简易打包', '5.00', 0, '2018-09-14 08:34:31', '2018-09-14 08:34:31'),
+(5, '取出发票', '10.10', 0, '2018-09-14 08:34:40', '2018-09-14 08:34:40'),
+(6, '退货服务', '0.50', 0, '2018-09-14 08:34:49', '2018-09-14 08:34:49'),
+(7, '重新打包', '8.88', 0, '2018-09-14 08:35:02', '2018-09-29 03:15:18');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `charge`
+--
+
+CREATE TABLE `charge` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `uid` int(10) UNSIGNED NOT NULL,
+  `yuansferId` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `charge_order_no` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '支持"alipay”,“wechatpay”,“unionpay"，即支付宝，微信，银联',
+  `money` decimal(8,2) NOT NULL DEFAULT '0.00',
+  `currency` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `terminal` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `charge`
+--
+
+INSERT INTO `charge` (`id`, `uid`, `yuansferId`, `charge_order_no`, `type`, `money`, `currency`, `terminal`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, '297553573243065575', 'CH20180921141537511061694839227', 'alipay', '50.00', 'USD', 'ONLINE', 1, '2018-09-21 06:24:24', '2018-09-21 06:25:46'),
+(2, 1, '297553573243066675', 'CH20180921141537511870864431089', 'alipay', '50.00', 'USD', 'ONLINE', 1, '2018-09-21 06:37:52', '2018-09-21 07:49:29'),
+(3, 1, NULL, 'CH20180921141537511897916280858', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-21 06:38:19', '2018-09-21 06:38:19'),
+(4, 1, NULL, 'CH20180925141537857922407471563', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-25 06:45:25', '2018-09-25 06:45:25'),
+(5, 1, NULL, 'CH20180925141537857981143643606', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-25 06:46:23', '2018-09-25 06:46:23'),
+(6, 1, NULL, 'CH20180925141537858047853791024', 'unionpay', '50.00', 'USD', 'ONLINE', 0, '2018-09-25 06:47:29', '2018-09-25 06:47:29'),
+(7, 1, NULL, 'CH20180925141537858064779671697', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-25 06:47:46', '2018-09-25 06:47:46'),
+(8, 1, NULL, 'CH20180925141537858107036297246', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-25 06:48:29', '2018-09-25 06:48:29'),
+(9, 1, NULL, 'CH20180928151538119621835936101', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-28 07:27:02', '2018-09-28 07:27:02'),
+(10, 1, NULL, 'CH20180928151538119628707486017', 'wechatpay', '50.00', 'USD', 'ONLINE', 0, '2018-09-28 07:27:09', '2018-09-28 07:27:09'),
+(11, 1, NULL, 'CH20180928151538119780690182487', 'unionpay', '100.00', 'USD', 'ONLINE', 0, '2018-09-28 07:29:41', '2018-09-28 07:29:41'),
+(12, 1, NULL, 'CH20180928151538119785107957354', 'alipay', '100.00', 'USD', 'ONLINE', 0, '2018-09-28 07:29:46', '2018-09-28 07:29:46'),
+(13, 1, NULL, 'CH20180928171538125343001251525', 'alipay', '100.00', 'USD', 'ONLINE', 0, '2018-09-28 09:02:24', '2018-09-28 09:02:24'),
+(14, 1, NULL, 'CH20180928171538125448455819504', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-28 09:04:09', '2018-09-28 09:04:09'),
+(15, 1, NULL, 'CH20180928171538125523908210765', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-28 09:05:25', '2018-09-28 09:05:25'),
+(16, 1, NULL, 'CH20180928171538125659105867342', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-28 09:07:41', '2018-09-28 09:07:41'),
+(17, 1, NULL, 'CH20180928171538125783143979862', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-28 09:09:44', '2018-09-28 09:09:44'),
+(18, 1, NULL, 'CH20180928171538125791555543128', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-28 09:09:52', '2018-09-28 09:09:52'),
+(19, 1, NULL, 'CH20180928171538125831249213833', 'alipay', '500.00', 'USD', 'ONLINE', 0, '2018-09-28 09:10:32', '2018-09-28 09:10:32'),
+(20, 1, NULL, 'CH20180929171538214005670941141', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-29 09:40:07', '2018-09-29 09:40:07'),
+(21, 1, NULL, 'CH20180929181538215375450358662', 'alipay', '50.00', 'USD', 'ONLINE', 0, '2018-09-29 10:02:56', '2018-09-29 10:02:56');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `company_information`
+--
+
+CREATE TABLE `company_information` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `uid` int(10) UNSIGNED NOT NULL,
+  `company_city` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_area` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_delegate` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_yy` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_sh` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_quitAddress` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_quitCode` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_contact` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company_fixedPhone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `company_wq` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sfz` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `xyk` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sdm` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `consume`
+--
+
+CREATE TABLE `consume` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `uid` int(10) UNSIGNED DEFAULT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `consume_order_no` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `system_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` tinyint(3) UNSIGNED NOT NULL DEFAULT '1' COMMENT '1:支付  2:补扣  3:退款',
+  `money` decimal(8,2) NOT NULL DEFAULT '0.00',
+  `unionaccount` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payaccount` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `handle` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `consume`
+--
+
+INSERT INTO `consume` (`id`, `uid`, `name`, `consume_order_no`, `system_order_no`, `user_order_no`, `type`, `money`, `unionaccount`, `payaccount`, `remark`, `handle`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 'test', 'C20180917115743731181', NULL, NULL, 3, '50.00', NULL, NULL, NULL, 1, 0, '2018-09-17 03:57:43', '2018-09-17 03:57:43'),
+(2, 1, 'test', 'C20180917115919982591', NULL, NULL, 3, '50.00', '12', '3123', 'as', 1, 0, '2018-09-17 03:59:19', '2018-09-17 03:59:19'),
+(3, 1, 'test', 'C20180917115958257356', 'W20180914135417174293', 'W123', 1, '100.00', NULL, NULL, '税金', 0, 0, '2018-09-17 03:59:58', '2018-09-17 03:59:58'),
+(4, 1, 'test', 'C20180917120037530744', 'W20180914135417174293', 'W123', 1, '100.00', NULL, NULL, '税金', 0, 0, '2018-09-17 04:00:37', '2018-09-17 04:00:37'),
+(5, 1, 'test', 'C20180928175359646392', 'W20180914135417174293', 'W123', 1, '100.00', NULL, NULL, '税金', 0, 0, '2018-09-28 09:53:59', '2018-09-28 09:53:59');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `content`
+--
+
+CREATE TABLE `content` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `type` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '1产品服务 2收费说明 3首页banner 4合作伙伴 5公告',
+  `title` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci,
+  `link` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `thumb` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `order` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `isban` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `content`
+--
+
+INSERT INTO `content` (`id`, `type`, `title`, `content`, `link`, `thumb`, `order`, `isban`, `created_at`, `updated_at`) VALUES
+(3, 1, NULL, '<p>sgfsdfgsdfgfghdfghdfgh<br/></p>', NULL, NULL, 0, 0, '2018-09-26 10:21:42', '2018-09-27 02:07:03'),
+(2, 2, NULL, '<p>东方故事电饭锅</p><p style=\"text-align: right;\">asdfasdf<br/></p><table width=\"1140\" border=\"1\"><tbody><tr class=\"firstRow\"><td style=\"word-break: break-all;\" width=\"126\" valign=\"top\">sdf<br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td></tr><tr><td width=\"126\" valign=\"top\">sdf<br/></td><td style=\"word-break: break-all;\" width=\"126\" valign=\"top\">f<br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td></tr><tr><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td></tr><tr><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td style=\"word-break: break-all;\" width=\"126\" valign=\"top\">f<br/></td><td style=\"word-break: break-all;\" width=\"126\" valign=\"top\">1<br/></td><td style=\"word-break: break-all;\" width=\"126\" valign=\"top\">1<br/></td><td style=\"word-break: break-all;\" width=\"126\" valign=\"top\">2<br/></td></tr><tr><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td style=\"word-break: break-all;\" width=\"126\" valign=\"top\">s<br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td></tr><tr><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td></tr><tr><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td></tr><tr><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td><td width=\"126\" valign=\"top\"><br/></td></tr></tbody></table><p><br/></p>', NULL, NULL, 0, 0, '2018-09-26 09:48:44', '2018-09-27 02:05:24'),
+(4, 3, 'Go', NULL, 'http://qq.com', '18/09/27/PJPciq6lyvjJe63i1Btn6JjgaxGxPEnOtA3bJpz5.jpeg', 16, 0, '2018-09-27 03:44:17', '2018-09-30 02:27:26'),
+(5, 4, '京东', NULL, 'http://jd.com', '18/09/27/rVvpDEr0QufY0gBDSVcjLDTZnhO4HxzgIiCXCIJ7.png', 0, 0, '2018-09-27 03:50:44', '2018-09-27 07:03:18'),
+(7, 5, '恭喜你发财，恭喜你精彩，好的都走来，不好的请走开！', '<p>asdfasdfzxcvdfgdfg123</p><table><tbody><tr class=\"firstRow\"><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td></tr><tr><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td></tr><tr><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td></tr><tr><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td></tr><tr><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td><td width=\"84\" valign=\"top\"><br/></td></tr></tbody></table><p><br/></p>', NULL, NULL, 0, 0, '2018-09-27 04:06:15', '2018-09-27 10:27:08'),
+(11, 3, '现在注册', NULL, 'https://www.meiquick.com/', '18/09/27/eTU2MOMCTsz5KKx8RgUZg2lyRwBc7Bsg4U9beyP6.jpeg', 17, 0, '2018-09-27 06:42:36', '2018-09-30 02:27:19');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `depot`
+--
+
+CREATE TABLE `depot` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `depot`
+--
+
+INSERT INTO `depot` (`id`, `name`, `order`, `created_at`, `updated_at`) VALUES
+(1, '阿里戈多', 0, '2018-09-29 03:10:01', '2018-09-29 03:10:01');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `line`
+--
+
+CREATE TABLE `line` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `channel` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `iupid` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `linetwos` text COLLATE utf8mb4_unicode_ci,
+  `products` text COLLATE utf8mb4_unicode_ci,
+  `ykg` decimal(8,2) NOT NULL DEFAULT '0.00' COMMENT '首重',
+  `price` text COLLATE utf8mb4_unicode_ci COMMENT '单价',
+  `overweight` text COLLATE utf8mb4_unicode_ci COMMENT '超重',
+  `unit` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '单位',
+  `order` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `isban` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `rule` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `goon` decimal(8,2) NOT NULL DEFAULT '0.00' COMMENT '续重',
+  `outon` decimal(8,2) NOT NULL DEFAULT '0.00' COMMENT '退位',
+  `print_template` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `file_template` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `ordersExcel` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `onlineExcel` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `line`
+--
+
+INSERT INTO `line` (`id`, `name`, `channel`, `content`, `iupid`, `linetwos`, `products`, `ykg`, `price`, `overweight`, `unit`, `order`, `remark`, `isban`, `rule`, `goon`, `outon`, `print_template`, `file_template`, `ordersExcel`, `onlineExcel`, `created_at`, `updated_at`) VALUES
+(1, '叫鸡不给钱', '别以为要始祖', '手表、项链、戒指、耳环等配饰暂不收，建议价值低的商品选择此路线，详情请参考《<a href=\"http://www.customs.gov.cn/publish/portal0/tab65598/info793342.htm\" target=\"_blank\"><u>中华人民共和国进境物品完税价格表</u></a>》，货物由顺丰负责全路段配送', 0, '3,2', '7,3,2,1', '5.00', '{\"1\":\"2\",\"2\":\"4\",\"3\":\"6\",\"4\":\"8\",\"5\":\"10\"}', '{\"1\":{\"price\":\"1\"},\"2\":{\"price\":\"3\"},\"3\":{\"price\":\"5\"},\"4\":{\"price\":\"7\"},\"5\":{\"price\":\"9\"}}', '磅', 0, '万岁千岁依你来做', 0, 1, '1.60', '0.30', 2, 0, '18/09/29/EFK4FAKLoa04tLgeHlakRmolwKQatey2j3FfWglD.xlsx', '18/09/29/pu4hKf2AzbPywF0dH1Ic7eGVADADWeC7Q9LSoXxr.xlsx', '2018-09-25 09:58:11', '2018-10-24 08:40:29'),
+(2, 'realDo', '浮夸你妹啊', '111111<a target=\"_blank\" href=\"http://baidu.com\">&lt;百度搞起啊&gt;</a>', 1, '5,4', '7,6,5,4,2,1', '2.00', '{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"}', '{\"1\":{\"price\":\"6\"},\"2\":{\"price\":\"7\"},\"3\":{\"price\":\"8\"},\"4\":{\"price\":\"9\"},\"5\":{\"price\":\"10\"}}', '克', 0, '123', 0, 1, '20.00', '2.00', 1, 0, NULL, NULL, '2018-09-29 09:17:46', '2018-10-24 08:39:41');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `linetwo`
+--
+
+CREATE TABLE `linetwo` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `money` decimal(8,2) NOT NULL DEFAULT '0.00',
+  `order` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `linetwo`
+--
+
+INSERT INTO `linetwo` (`id`, `name`, `money`, `order`, `created_at`, `updated_at`) VALUES
+(2, 'so stay', '2.00', 0, '2018-10-24 07:47:34', '2018-10-24 07:47:34'),
+(3, 'away do it', '0.00', 0, '2018-10-24 07:47:43', '2018-10-24 07:47:43'),
+(4, 'the clock', '0.00', 0, '2018-10-24 07:47:48', '2018-10-24 07:47:48'),
+(5, 'is taking', '0.00', 0, '2018-10-24 07:47:54', '2018-10-24 07:47:54');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `migrations`
+--
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(8, '2014_10_12_000000_create_users_table', 1),
+(9, '2014_10_12_100000_create_password_resets_table', 1),
+(10, '2018_08_13_074939_create_permission_tables', 1),
+(11, '2018_08_21_064432_create_receiver_table', 1),
+(12, '2018_08_21_070318_create_sender_table', 1),
+(43, '2018_08_25_234309_create_order_product_table', 18),
+(42, '2018_08_25_225415_create_order_table', 18),
+(29, '2018_09_10_211756_create_addon_table', 8),
+(36, '2018_09_04_171149_create_consume_table', 12),
+(21, '2018_09_10_145307_create_personal_information_table', 5),
+(22, '2018_09_10_145432_create_company_information_table', 5),
+(23, '2018_09_10_211750_create_depot_table', 6),
+(37, '2018_09_04_164022_create_charge_table', 13),
+(25, '2018_09_11_145439_create_product_table', 7),
+(39, '2018_09_26_144945_create_content_table', 15),
+(38, '2018_09_12_141334_create_line_table', 14),
+(40, '2018_10_23_163344_create_linetwo_table', 16),
+(41, '2018_11_09_093453_create_order_log_table', 17);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `model_has_permissions`
+--
+
+CREATE TABLE `model_has_permissions` (
+  `permission_id` int(10) UNSIGNED NOT NULL,
+  `model_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint(20) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `model_has_roles`
+--
+
+CREATE TABLE `model_has_roles` (
+  `role_id` int(10) UNSIGNED NOT NULL,
+  `model_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint(20) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `order`
+--
+
+CREATE TABLE `order` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `uid` int(10) UNSIGNED NOT NULL,
+  `system_order_no` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `express_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `line_id` int(10) UNSIGNED NOT NULL,
+  `s_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `s_phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `s_code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `s_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `s_country` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `s_province` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `s_city` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `r_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `r_phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `r_cre_type` tinyint(3) UNSIGNED NOT NULL,
+  `r_cre_num` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `r_code` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `r_province` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `r_city` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `r_town` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `r_addressDetail` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `upload_type` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `id_card_front` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id_card_back` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `depot` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `addons` text COLLATE utf8mb4_unicode_ci,
+  `linetwo` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '关联的二级线路',
+  `weight` decimal(8,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT '真实称重值',
+  `tax` decimal(8,2) NOT NULL DEFAULT '0.00' COMMENT '税金',
+  `money` decimal(8,2) NOT NULL DEFAULT '0.00' COMMENT '首重+附加服务费用',
+  `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '当前状态',
+  `before_status` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '上一个状态',
+  `user_confirm` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '异常件用户是否点击确认',
+  `fail_reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '异常原因',
+  `productdetail` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '物品内容',
+  `productremark` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '物品备注',
+  `print` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `order`
+--
+
+INSERT INTO `order` (`id`, `uid`, `system_order_no`, `user_order_no`, `express_no`, `line_id`, `s_name`, `s_phone`, `s_code`, `s_address`, `s_country`, `s_province`, `s_city`, `r_name`, `r_phone`, `r_cre_type`, `r_cre_num`, `r_code`, `r_province`, `r_city`, `r_town`, `r_addressDetail`, `upload_type`, `id_card_front`, `id_card_back`, `depot`, `addons`, `linetwo`, `weight`, `tax`, `money`, `status`, `before_status`, `user_confirm`, `fail_reason`, `productdetail`, `productremark`, `print`, `created_at`, `updated_at`) VALUES
+(1, 1, 'W20181109171527793108', 'W123123123', NULL, 2, '水电费', '13422222222', '123', '123', 'U.S.A', 'Arkansas', '123', '发送到福', '13411111111', 1, '441301199901010015', '123', '天津', '天津市', '河东区', '123', 2, '', '', '阿里戈多', '美国-台湾线,拍照服务,取出发票,退货服务', 0, '0.00', '0.00', '0.00', 0, 0, 0, NULL, '汤倍臣,测试', NULL, 0, '2018-11-09 09:15:27', '2018-11-09 09:15:27');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `order_log`
+--
+
+CREATE TABLE `order_log` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `oid` int(10) UNSIGNED NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `order_product`
+--
+
+CREATE TABLE `order_product` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `system_order_no` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category_one` int(10) UNSIGNED NOT NULL,
+  `category_two` int(10) UNSIGNED NOT NULL,
+  `detail` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `brand` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` decimal(8,2) NOT NULL,
+  `catname` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `amount` mediumint(8) UNSIGNED NOT NULL,
+  `remark` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `order_product`
+--
+
+INSERT INTO `order_product` (`id`, `system_order_no`, `category_one`, `category_two`, `detail`, `brand`, `price`, `catname`, `amount`, `remark`, `created_at`, `updated_at`) VALUES
+(1, 'W20181109171527793108', 1, 10, '汤倍臣', '365', '1.00', '123', 1, '123', '2018-11-09 09:15:27', '2018-11-09 09:15:27'),
+(2, 'W20181109171527793108', 7, 14, '测试', '3M', '1.00', '123', 1, 'asdf', '2018-11-09 09:15:27', '2018-11-09 09:15:27');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `permissions`
+--
+
+CREATE TABLE `permissions` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `personal_information`
+--
+
+CREATE TABLE `personal_information` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `uid` int(10) UNSIGNED NOT NULL,
+  `sender_xing` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_ming` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_city` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_area` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_paperType` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_paperNo` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_quitAddress` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_quitCode` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender_fixedPhone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `receive_country` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receive_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receive_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receive_code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receive_phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receive_fixedPhone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `receive_wq` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sfz` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `xyk` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sdm` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `personal_information`
+--
+
+INSERT INTO `personal_information` (`id`, `uid`, `sender_xing`, `sender_ming`, `sender_city`, `sender_area`, `sender_paperType`, `sender_paperNo`, `sender_quitAddress`, `sender_quitCode`, `sender_phone`, `sender_fixedPhone`, `receive_country`, `receive_name`, `receive_address`, `receive_code`, `receive_phone`, `receive_fixedPhone`, `receive_wq`, `sfz`, `xyk`, `sdm`, `created_at`, `updated_at`) VALUES
+(1, 1, '水电费', '啊', 'Alaska', '123', '驾照', '123', '123', '123', '13422222222', NULL, '中国', '123', '123', '123', '13411111111', NULL, NULL, '18/09/10/uLjkZy1ro7x6WWSfwUrHiMblkgW3TQiLZ4ZuXzOx.jpeg', NULL, NULL, '2018-09-10 07:32:31', '2018-09-10 07:32:31'),
+(2, 2, 'asdfjlkasdjflsdfasdf', 'asasdfjlkasdjflsdfasdf', 'Alaska', '123123', '驾照', '441302199901010015', '123', '123', '1234567890', '123', '中国', '123', '123', '123', '13411111111', NULL, NULL, '18/10/11/W18t1Nccc1wjg9LmmDxeN2Y8U0ODde8jawm14umt.jpeg', NULL, NULL, '2018-10-11 07:29:51', '2018-10-11 07:29:51');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `product`
+--
+
+CREATE TABLE `product` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_id` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
+  `order` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `product`
+--
+
+INSERT INTO `product` (`id`, `name`, `parent_id`, `order`, `created_at`, `updated_at`) VALUES
+(1, '奶粉', 0, 0, '2018-09-11 07:13:01', '2018-09-11 07:13:01'),
+(2, '速度发斯蒂芬', 0, 0, '2018-09-11 07:19:24', '2018-09-11 07:19:24'),
+(3, '寻秦记', 0, 0, '2018-09-11 07:21:08', '2018-09-11 07:21:08'),
+(4, '123', 0, 0, '2018-09-11 07:24:52', '2018-09-11 07:24:52'),
+(5, '34234', 0, 0, '2018-09-11 07:27:43', '2018-09-11 07:27:43'),
+(6, 'asdf', 0, 0, '2018-09-11 07:28:26', '2018-09-11 07:28:26'),
+(7, 'fgh', 0, 0, '2018-09-11 07:30:15', '2018-09-11 07:30:15'),
+(14, '测试1123', 7, 0, '2018-10-15 03:05:27', '2018-10-15 03:06:56'),
+(10, '一段奶粉', 1, 0, '2018-09-11 07:59:58', '2018-09-11 07:59:58'),
+(11, '二段奶粉', 1, 0, '2018-09-11 08:00:05', '2018-09-11 08:00:05'),
+(12, '123123', 3, 0, '2018-10-11 08:46:33', '2018-10-11 08:46:33');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `receiver`
+--
+
+CREATE TABLE `receiver` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `uid` int(10) UNSIGNED NOT NULL,
+  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cre_type` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
+  `cre_num` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `province` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `city` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `town` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `addressDetail` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tag` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `line_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `id_card_front` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id_card_back` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `isdefault` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `receiver`
+--
+
+INSERT INTO `receiver` (`id`, `uid`, `name`, `phone`, `cre_type`, `cre_num`, `province`, `city`, `town`, `addressDetail`, `code`, `tag`, `line_id`, `id_card_front`, `id_card_back`, `isdefault`, `created_at`, `updated_at`) VALUES
+(1, 1, '发送到福', '13411111111', 1, '441301199901010015', '天津', '天津市', '河东区', '123', '123', NULL, 19, NULL, NULL, 1, '2018-08-29 02:53:47', '2018-08-29 03:01:56'),
+(2, 1, '虽然都太催乳', '13411111111', 1, '441301199901010015', '天津', '天津市', '河东区', '123', '123', NULL, 2, '', '', 0, '2018-10-15 03:32:47', '2018-10-15 03:32:47');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `roles`
+--
+
+CREATE TABLE `roles` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `role_has_permissions`
+--
+
+CREATE TABLE `role_has_permissions` (
+  `permission_id` int(10) UNSIGNED NOT NULL,
+  `role_id` int(10) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `sender`
+--
+
+CREATE TABLE `sender` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `uid` int(10) UNSIGNED NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'U.S.A',
+  `province` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `city` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `isdefault` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `sender`
+--
+
+INSERT INTO `sender` (`id`, `uid`, `name`, `phone`, `country`, `province`, `city`, `address`, `code`, `isdefault`, `created_at`, `updated_at`) VALUES
+(1, 1, '水电费', '13422222222', 'U.S.A', 'Arkansas', '123', '123', '123', 1, '2018-08-29 02:54:01', '2018-08-29 03:02:37'),
+(2, 2, 'asdfasdfasdfasdfasdf sdf', '1234567890', 'U.S.A', 'Arkansas', '123', '123', '123', 0, '2018-10-11 07:17:06', '2018-10-11 07:17:06');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mobile` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `xing` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ming` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `active` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
+  `step` tinyint(3) UNSIGNED NOT NULL DEFAULT '2',
+  `user_identification` char(8) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rank` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
+  `money` decimal(8,2) UNSIGNED NOT NULL DEFAULT '0.00',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `type`, `mobile`, `xing`, `ming`, `email`, `password`, `remember_token`, `active`, `step`, `user_identification`, `rank`, `money`, `created_at`, `updated_at`) VALUES
+(1, 'test', 'personal', NULL, '123', '123', '413346424@qq.com', '$2y$10$9i2POIYTN/N51nqCiheg4.YWKsBc8SkGLfcnWYePJYPpDa3wGUeuy', 'MnPraoRx3sK57C87TXDul9KWQxkMWppbFffuIRwiBPsN4dhwCbsIQZvclvxW', 1, 6, '2ABiIXGv', 5, '50.00', '2018-08-17 19:35:28', '2018-09-28 09:53:59'),
+(2, 'test1', 'personal', NULL, 'Brfxxccxxmnpcccclllmmnprxvclmnckssqlbb1111b', 'Brfxxccxxmnpcccclllmmnprxvclmnckssqlbb1111b', 'a@a.com', '$2y$10$kAyeWteSFlN9nagB7HM/Eukytr6YkZmD9rBI9lRQaH4.cIuig0KWa', '0Lp9HVjjfHx0jIgjLZxyxIYbmPfvNI6oZGxDS3GhHl0GAyWIin6VQUDlyJS9', 0, 6, '3pM8ZNLZ', 1, '0.00', '2018-10-11 06:54:08', '2018-10-11 07:29:55');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `addon`
+--
+ALTER TABLE `addon`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `charge`
+--
+ALTER TABLE `charge`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `charge_charge_order_no_unique` (`charge_order_no`),
+  ADD UNIQUE KEY `charge_yuansferid_unique` (`yuansferId`);
+
+--
+-- Indexes for table `company_information`
+--
+ALTER TABLE `company_information`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `consume`
+--
+ALTER TABLE `consume`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `consume_consume_order_no_unique` (`consume_order_no`);
+
+--
+-- Indexes for table `content`
+--
+ALTER TABLE `content`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `depot`
+--
+ALTER TABLE `depot`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `line`
+--
+ALTER TABLE `line`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `linetwo`
+--
+ALTER TABLE `linetwo`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `model_has_permissions`
+--
+ALTER TABLE `model_has_permissions`
+  ADD PRIMARY KEY (`permission_id`,`model_id`,`model_type`),
+  ADD KEY `model_has_permissions_model_type_model_id_index` (`model_type`,`model_id`);
+
+--
+-- Indexes for table `model_has_roles`
+--
+ALTER TABLE `model_has_roles`
+  ADD PRIMARY KEY (`role_id`,`model_id`,`model_type`),
+  ADD KEY `model_has_roles_model_type_model_id_index` (`model_type`,`model_id`);
+
+--
+-- Indexes for table `order`
+--
+ALTER TABLE `order`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `order_system_order_no_unique` (`system_order_no`);
+
+--
+-- Indexes for table `order_log`
+--
+ALTER TABLE `order_log`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `order_product`
+--
+ALTER TABLE `order_product`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD KEY `password_resets_email_index` (`email`);
+
+--
+-- Indexes for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `personal_information`
+--
+ALTER TABLE `personal_information`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `product`
+--
+ALTER TABLE `product`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `receiver`
+--
+ALTER TABLE `receiver`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `role_has_permissions`
+--
+ALTER TABLE `role_has_permissions`
+  ADD PRIMARY KEY (`permission_id`,`role_id`),
+  ADD KEY `role_has_permissions_role_id_foreign` (`role_id`);
+
+--
+-- Indexes for table `sender`
+--
+ALTER TABLE `sender`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `users_email_unique` (`email`),
+  ADD UNIQUE KEY `users_uidentification` (`user_identification`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `addon`
+--
+ALTER TABLE `addon`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- 使用表AUTO_INCREMENT `charge`
+--
+ALTER TABLE `charge`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- 使用表AUTO_INCREMENT `company_information`
+--
+ALTER TABLE `company_information`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `consume`
+--
+ALTER TABLE `consume`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- 使用表AUTO_INCREMENT `content`
+--
+ALTER TABLE `content`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- 使用表AUTO_INCREMENT `depot`
+--
+ALTER TABLE `depot`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- 使用表AUTO_INCREMENT `line`
+--
+ALTER TABLE `line`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- 使用表AUTO_INCREMENT `linetwo`
+--
+ALTER TABLE `linetwo`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- 使用表AUTO_INCREMENT `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+
+--
+-- 使用表AUTO_INCREMENT `order`
+--
+ALTER TABLE `order`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- 使用表AUTO_INCREMENT `order_log`
+--
+ALTER TABLE `order_log`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `order_product`
+--
+ALTER TABLE `order_product`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- 使用表AUTO_INCREMENT `permissions`
+--
+ALTER TABLE `permissions`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `personal_information`
+--
+ALTER TABLE `personal_information`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- 使用表AUTO_INCREMENT `product`
+--
+ALTER TABLE `product`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- 使用表AUTO_INCREMENT `receiver`
+--
+ALTER TABLE `receiver`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- 使用表AUTO_INCREMENT `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 使用表AUTO_INCREMENT `sender`
+--
+ALTER TABLE `sender`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- 使用表AUTO_INCREMENT `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+COMMIT;

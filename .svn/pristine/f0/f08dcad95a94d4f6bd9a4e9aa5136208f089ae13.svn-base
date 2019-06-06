@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Charge;
+use App\Consume;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+class CenterController extends Controller
+{
+    public function index($type){
+        $user = Auth::user();
+        return view('admin.center.'.($type == 1 ? 'index' : 'consume'),['user'=>$user,'type'=>$type]);
+    }
+
+    public function getData($type,Request $request){
+        $userid = Auth::id();
+        $page = intval($request->post('page',10));
+        $limit = intval($request->post('limit',10));
+        $data = $type == 1 ? Charge::where('uid',$userid) : Consume::where('uid',$userid);
+        $acceptParams = ['system_order_no','user_order_no','charge_order_no','type','start','end'];
+        foreach ($acceptParams as $val){
+            if (!empty($request->get($val))){
+                if ($val == 'start'){
+                    $data = $data->where('created_at','>=',$request->get($val));
+                }elseif ($val == 'end'){
+                    $data = $data->where('created_at','<=',$request->get($val));
+                }else{
+                    $data = $data->where($val,$request->get($val));
+                }
+            }
+        }
+        $count = $data->count();
+        $outputData = $data->offset(($page-1)*$limit)->limit($limit)->orderBy('created_at','DESC')->get();
+        return response()->json(['status'=>200,'msg'=>'Success','data'=>$outputData,'count'=>$count]);
+    }
+
+    public function payCallback(Request $request){
+        Log::notice($request);
+    }
+
+    public function securepay(Request $request){
+        $allowCurrency = ['USD','CAD','CNY'];
+        $allowVendor = ['alipay','wechatpay','unionpay'];
+        $amount = $request->post('amount') ? number_format($request->post('amount'),'2','.','') : '0.01';
+        $currency = in_array($request->post('currency'),$allowCurrency) ? $request->post('currency') : 'USD';
+        $vendor = in_array($request->post('vendor'),$allowVendor) ? $request->post('vendor') : 'alipay';
+        $micro = intval(microtime(true)*1000);
+        $refernce = 'CH'.date('YmdH',time()).$micro.rand(100000,999999);
+        $terminal = $this->__isMobile() ? 'WAP' : 'ONLINE';
+        $url = 'https://mapi.yuansfer.com/appTransaction/v2/securepay';
+        $token = env('YUAN_TOKEN');
+
+        $params = [
+            'merchantNo' => env('YUAN_MERCHANTNO'),
+            'storeNo' => env('YUAN_STORENO'),
+            'amount' => $amount,
+            'currency' => $currency,
+            'vendor' => $vendor,
+            //'ipnUrl' => 'https://nengjtian.s1.natapp.cc/login/test',
+            'callbackUrl' => route('payCallback').'?yuansferId={yuansferId}&status={status}&amount={amount}&time={time}&reference={reference}&note={note}&description={description}&terminal={terminal}',
+            'terminal' => $terminal,
+            'reference' => $refernce,
+            'description' => 'test_description',
+            'note' => md5($refernce.$amount),
+            'timeout' => '120'
+        ];
+
+        ksort($params, SORT_STRING);
+        $str = '';
+        foreach ($params as $k => $v) {
+            $str .= $k . '=' . $v . '&';
+        }
+        $params['verifySign'] = md5($str . md5($token));
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($params),
+        ));
+
+        $result = curl_exec($ch);
+        curl_exec($ch);
+
+        $result = json_decode($result, true);
+        $create = [
+            'uid'=>Auth::id(),
+            'charge_order_no'=>$refernce,
+            'type'=>$vendor,
+            'money'=>$amount,
+            'currency'=>$currency,
+            'terminal'=>$terminal,
+        ];
+        Charge::create($create);
+        return response()->json(['status'=>200,'msg'=>'Success','data'=>$params]);
+    }
+
+    function __isMobile() {
+        // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
+        if (isset($_SERVER['HTTP_X_WAP_PROFILE'])) {
+            return true;
+        }
+        // 如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
+        if (isset($_SERVER['HTTP_VIA'])) {
+            // 找不到为flase,否则为true
+            return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false;
+        }
+        // 脑残法，判断手机发送的客户端标志,兼容性有待提高。其中'MicroMessenger'是电脑微信
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            $clientkeywords = array('nokia','sony','ericsson','mot','samsung','htc','sgh','lg','sharp','sie-','philips','panasonic','alcatel','lenovo','iphone','ipod','blackberry','meizu','android','netfront','symbian','ucweb','windowsce','palm','operamini','operamobi','openwave','nexusone','cldc','midp','wap','mobile','MicroMessenger');
+            // 从HTTP_USER_AGENT中查找手机浏览器的关键字
+            if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))) {
+                return true;
+            }
+        }
+        // 协议法，因为有可能不准确，放到最后判断
+        if (isset ($_SERVER['HTTP_ACCEPT'])) {
+            // 如果只支持wml并且不支持html那一定是移动设备
+            // 如果支持wml和html但是wml在html之前则是移动设备
+            if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+}

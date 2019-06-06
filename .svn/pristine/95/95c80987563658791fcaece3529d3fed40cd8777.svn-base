@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Order;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
+class ListController extends Controller
+{
+
+    private $userid;
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->userid = Auth::id();
+            return $next($request);
+        });
+    }
+
+    public function index(){
+        return view('admin.list.index');
+    }
+
+    public function getData(Request $request){
+        $page = intval($request->post('page',10));
+        $limit = intval($request->post('limit',10));
+        $data = Order::where('uid',$this->userid)->offset(($page-1)*$limit)->limit($limit)->orderBy('created_at','DESC')->get();
+        foreach ($data as $key=>$val){
+            $val['number'] = $key+1;
+            $data[$key] = $val;
+        }
+        $count = Order::where('uid',$this->userid)->count();
+        return response()->json(['status'=>200,'msg'=>'Success','data'=>$data,'count'=>$count]);
+    }
+}

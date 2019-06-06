@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Http\Controllers\Index;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class LoginController extends Controller
+{
+    public function show(){
+        $output['partner'] = [1,2,3,4,5,6,7,8,9,10,11,12];
+        return view('index.login',$output);
+    }
+
+    public function login(Request $request){
+        $this->validate($request, [
+            'name' => 'bail|required||max:20',
+            'password' => 'bail|required|max:50',
+            'verifycode' => 'bail|required|captcha',
+        ]);
+
+        $name = strip_tags(trim($request->post('name','')));
+        $password = strip_tags(trim($request->post('password','')));
+        $verifycode = strip_tags(trim($request->post('verifycode',0)));
+    }
+}

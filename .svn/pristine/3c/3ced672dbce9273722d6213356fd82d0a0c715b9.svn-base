@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Charge;
+use App\Consume;
+use App\User;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class CenterController extends Controller
+{
+    public function index($type){
+        return view('master.center.'.($type == 1 ? 'index' : 'consume'),['type'=>$type]);
+    }
+
+    public function getData($type,Request $request){
+        $page = intval($request->post('page',10));
+        $limit = intval($request->post('limit',10));
+        $data = $type == 1 ? Charge::whereRaw('1 = 1') : Consume::whereRaw('1 = 1');
+        $acceptParams = ['system_order_no','user_order_no','charge_order_no','type','start','end'];
+        foreach ($acceptParams as $val){
+            if (!empty($request->get($val))){
+                if ($val == 'start'){
+                    $data = $data->where('created_at','>=',$request->get($val));
+                }elseif ($val == 'end'){
+                    $data = $data->where('created_at','<=',$request->get($val));
+                }else{
+                    $data = $data->where($val,$request->get($val));
+                }
+            }
+        }
+        $count = $data->count();
+        $outputData = $data->offset(($page-1)*$limit)->limit($limit)->orderBy('created_at','DESC')->get();
+        return response()->json(['status'=>200,'msg'=>'Success','data'=>$outputData,'count'=>$count]);
+    }
+}

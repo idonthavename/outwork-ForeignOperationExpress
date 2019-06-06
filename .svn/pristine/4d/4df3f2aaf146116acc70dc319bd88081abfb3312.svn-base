@@ -1,0 +1,172 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Order;
+use App\OrderProduct;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
+class OrdersController extends Controller
+{
+    public function index(){
+        return view('admin.orders.index');
+    }
+
+    public function upload(Request $request){
+        $this->validate($request,[
+            'excel'=>'required|file'
+        ]);
+
+        $allowTypes = ['xls','xlsx'];
+        $excel = $request->file('excel');
+        $line_id = intval($request->post('line_id'),0);
+        if (!$line_id) return response(['status'=>-100,'msg'=>'请先选择路线']);
+        if (in_array(strtolower($excel->getClientOriginalExtension()),$allowTypes)){
+            require_once(base_path() . '/app/libs/PHPExcel-1.8/Classes/PHPExcel/IOFactory.php');
+            $reader = \PHPExcel_IOFactory::createReader('Excel2007');
+            $PHPExcel = $reader->load($excel->path()); // 载入excel文件
+            $sheet = $PHPExcel->getSheet(0);// 读取第一個工作表
+            $highestRow = $sheet->getHighestRow(); // 取得总行数
+            $highestColumm = $sheet->getHighestColumn(); // 取得总列数
+            $data_num = 0;
+            $oknum = 0;
+            $data = [];
+            $outputErrors = [];
+            for ($row = 4; $row <= $highestRow; $row++) {//行数是以第1行开始
+                $user_order_no = $sheet->getCell('A' . $row)->getValue();
+                if (!isset($data[$user_order_no]) || empty($data[$user_order_no])){
+                    $data[$user_order_no]['user_order_no'] = $sheet->getCell('A' . $row)->getValue();
+                    $data[$user_order_no]['r_name'] = $sheet->getCell('B' . $row)->getValue();
+                    $data[$user_order_no]['r_cre_type'] = 1;
+                    $data[$user_order_no]['r_cre_num'] = $sheet->getCell('C' . $row)->getValue();
+                    $data[$user_order_no]['r_addressDetail'] = $sheet->getCell('D' . $row)->getValue();
+                    $data[$user_order_no]['r_phone'] = $sheet->getCell('E' . $row)->getValue();
+
+                    $data[$user_order_no]['s_name'] = $sheet->getCell('N' . $row)->getValue();
+                    $data[$user_order_no]['s_address'] = $sheet->getCell('O' . $row)->getValue();
+                    $data[$user_order_no]['s_country'] = 'U.S.A';
+                    $data[$user_order_no]['s_province'] = $sheet->getCell('P' . $row)->getValue();
+                    $data[$user_order_no]['s_city'] = $sheet->getCell('Q' . $row)->getValue();
+                    $data[$user_order_no]['s_phone'] = $sheet->getCell('R' . $row)->getValue();
+                    $data[$user_order_no]['s_code'] = $sheet->getCell('S' . $row)->getValue();
+                    $data[$user_order_no]['depot'] = $sheet->getCell('T' . $row)->getValue();
+                    $data[$user_order_no]['addons'] = $sheet->getCell('U' . $row)->getValue();
+                    $data[$user_order_no]['row'] = $row;
+                }
+                $data_num++;
+                $data[$user_order_no]['products'][] = $this->__combon($sheet,$row);
+            }
+            if ($data_num < 1) return response(['status'=>-100,'msg'=>'请填写至少一条数据']);
+
+            foreach ($data as $key=>$val){
+                $validator = Validator::make($val,[
+                    'depot'=>'required|max:100',
+                    'addons'=>'nullable|max:255',
+                    'user_order_no'=>'required|max:50',
+                    's_name'=>'required|between:1,10',
+                    's_phone' => 'required|min:11',
+                    's_country' => 'required',
+                    's_province' => 'required',
+                    's_city' => 'required',
+                    's_address' => 'required',
+                    's_code' => 'required',
+
+                    'r_name'=>'required|between:1,10',
+                    'r_phone' => 'required|min:11',
+                    'r_cre_type' => 'required|integer',
+                    'r_cre_num' => ['required','regex:/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/'],
+                    'r_addressDetail' => 'required',
+                    /*'r_province' => 'required',
+                    'r_city' => 'required',
+                    'r_town' => 'required',
+                    'r_code' => 'required',*/
+                ]);
+
+                if ($validator->fails()){
+                    $outputErrors[$key][$val['row']] = $validator->errors()->messages();
+                }
+
+                $checkProduct = $this->__checkProduct($val['products']);
+                if ($checkProduct <> 'Success'){
+                    if (isset($outputErrors[$key]) || !empty($outputErrors[$key])){
+                        //实现数组合并，官方函数会照成行数重新排序问题，固然只有自己写
+                        foreach ($checkProduct as $ck=>$cv){
+                            if (isset($outputErrors[$key][$ck]) && !empty($outputErrors[$key][$ck])){
+                                $outputErrors[$key][$ck] = array_merge($outputErrors[$key][$ck],$checkProduct[$ck]);
+                            }else{
+                                $outputErrors[$key][$ck] = $checkProduct[$ck];
+                            }
+                        }
+                    }else{
+                        $outputErrors[$key] = $checkProduct;
+                    }
+                }
+            }
+
+            $uid = Auth::id();
+            if (!$isWrong = isset($outputErrors) && !empty($outputErrors)){
+                foreach ($data as $val){
+                    $oknum++;
+                    $products = $val['products'];
+                    unset($val['products'],$val['row']);
+                    $val['system_order_no'] = 'W'.date('YmdHis').mt_rand(100000,999999);
+                    $val['uid'] = $uid;
+                    $val['line_id'] = $line_id;
+                    Order::create($val);
+                    foreach ($products as $pval){
+                        unset($pval['row']);
+                        $pval['system_order_no'] = $val['system_order_no'];
+                        OrderProduct::create($pval);
+                    }
+                }
+            }
+
+            return response()->json(['status'=>200,'msg'=>'成功导入 '.$oknum.' 条数据！','data'=>$outputErrors,'isWrong'=>$isWrong]);
+        }else{
+            return response()->json(['status'=>-100,'msg'=>'请上传xls或xlsx文件']);
+        }
+    }
+
+    private function __combon($sheet,$row){
+        $product = [];
+        $product['category_one'] = $sheet->getCell('F' . $row)->getValue();
+        $product['category_two'] = $sheet->getCell('G' . $row)->getValue();
+        if ($product['category_one']) $product['category_one'] = 1575;
+        if ($product['category_two']) $product['category_two'] = 1611;
+        $product['detail'] = $sheet->getCell('H' . $row)->getValue();
+        $product['brand'] = $sheet->getCell('I' . $row)->getValue();
+        $product['catname'] = $sheet->getCell('J' . $row)->getValue();
+        $product['amount'] = $sheet->getCell('K' . $row)->getValue();
+        $product['price'] = $sheet->getCell('L' . $row)->getValue();
+        $product['remark'] = str_replace('，',',',$sheet->getCell('H' . $row)->getValue());
+        $product['row'] = $row;
+        return $product;
+    }
+
+    private function __checkProduct($data){
+        $returnData = [];
+        foreach ($data as $key=>$val){
+            $validator = Validator::make($val,[
+                'category_one'=>'required|integer',
+                'category_two'=>'required|integer',
+                'detail'=>'required|between:1,100',
+                'brand'=>'required|between:1,100',
+                'price'=>'required|numeric',
+                'catname'=>'required|between:1,50',
+                'amount'=>'required|integer|min:1',
+                'remark'=>'nullable|max:100',
+            ],[
+                'category_one.integer'=>'请选择正确物品一级类别',
+                'category_two.integer'=>'请选择正确物品二级类别',
+            ]);
+
+            if ($validator->fails()) {
+                $returnData[$val['row']] = $validator->errors()->messages();
+            }
+        }
+        return isset($returnData) && !empty($returnData) ? $returnData : 'Success';
+    }
+}

@@ -1,0 +1,15 @@
+<link href="<?php echo e(asset('css/common/partner.css')); ?>" rel="stylesheet">
+<div class="partner">
+    <div class="layui-container">
+        <div class="layui-row layui-col-space5 jiange3">
+            <div class="layui-col-sm12 layui-col-md1 jiange1">合作伙伴：</div>
+            <div class="layui-col-sm12 layui-col-md11">
+                <div class="layui-row layui-col-space10">
+                    <?php $__currentLoopData = $partner; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="layui-col-sm6 layui-col-md2"><a href="#" target="_blank"><div class="gezi"><img src="<?php echo e(asset('images/partner.png')); ?>"></div></a></div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

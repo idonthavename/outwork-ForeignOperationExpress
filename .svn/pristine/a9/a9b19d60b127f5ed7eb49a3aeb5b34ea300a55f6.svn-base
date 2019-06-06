@@ -1,0 +1,5 @@
+@extends('common.header')
+
+@section('content')
+    slkdfjalskdjfl1234
+@endsection

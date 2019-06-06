@@ -1,0 +1,15 @@
+<link href="{{ asset('css/common/partner.css') }}" rel="stylesheet">
+<div class="partner">
+    <div class="layui-container">
+        <div class="layui-row layui-col-space5 jiange3">
+            <div class="layui-col-sm12 layui-col-md1 jiange1">合作伙伴：</div>
+            <div class="layui-col-sm12 layui-col-md11">
+                <div class="layui-row layui-col-space10">
+                    @foreach($partner as $val)
+                        <div class="layui-col-sm6 layui-col-md2"><a href="#" target="_blank"><div class="gezi"><img src="{{asset('images/partner.png')}}"></div></a></div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

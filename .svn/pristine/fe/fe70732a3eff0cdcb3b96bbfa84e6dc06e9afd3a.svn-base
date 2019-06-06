@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Order;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Milon\Barcode\DNS1D;
+use Mpdf\Mpdf;
+
+
+class PrintController extends Controller
+{
+    public function index(){
+        $print_template = [
+            1=>['name'=>'模板1'],
+            2=>['name'=>'模板2'],
+            //3=>['name'=>'模板3'],
+        ];
+        return view('master.print.index',['print_template'=>$print_template]);
+    }
+
+    public function show(Request $request){
+        $id = intval($request->get('id'));
+        $info = Order::find(1);
+        $info['products'] = $info->productData;
+        foreach ($info['products'] as $key=>$val){
+            $val['category_one'] = $val->categoryOne->name;
+            $val['category_two'] = $val->categoryTwo->name;
+            $info['products'][$key] = $val;
+        }
+        $barcode =  DNS1D::getBarcodePNG($info->system_order_no, "C128",2,100);
+
+        $mpdf = new Mpdf(['mode'=>'+aCJK']);
+        $mpdf->SetDisplayMode('fullpage');
+        $mpdf->autoScriptToLang = true;
+        $mpdf->autoLangToFont = true;
+        $html = view('master.print.template1',['data'=>$info,'barcode'=>$barcode])->render();
+        if ($request->get("a")){
+            $mpdf->WriteHTML($html);
+            $mpdf->Output();
+        }else{
+            return view('master.print.template1',['data'=>$info,'barcode'=>$barcode]);
+        }
+
+    }
+}

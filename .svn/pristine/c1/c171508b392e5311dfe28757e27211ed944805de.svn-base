@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class ListController extends Controller
+{
+    public function index(){
+        return view('admin.list.index');
+    }
+
+    public function getData(){
+        $data = [['id'=>1,'sender'=>'你妹','receiver'=>'law','create_at'=>(string)Carbon::now(),'outNo'=>'123','no'=>'321','thumb'=>123,'print'=>rand(0,1)]];
+        return response()->json(['status'=>200,'msg'=>'Success','data'=>$data,'count'=>100]);
+    }
+}

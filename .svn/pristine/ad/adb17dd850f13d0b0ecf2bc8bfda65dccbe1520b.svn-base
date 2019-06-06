@@ -1,0 +1,130 @@
+@extends('common.header')
+
+@section('content')
+
+    <style>
+        #banner{height: 193px;position: relative;z-index: 1;overflow: hidden;}
+        .banner-img{background-image: url("{{asset('images/register-banner.jpg')}}"); background-position: center center; width: 100%;height: 100%;display: block;}
+        .banner-img .banner-content{font-size: 1.5rem;font-weight: bolder;    padding-top: 4rem;  line-height: 2.5rem;  }
+        .content{background: white;font-size: 0;color: white;margin-bottom: 3rem;}
+        .step{padding-top: 5rem;width: 190px;position: relative;    text-align: center;}
+        .step img{width: 190px;}
+        .step .title-header{font-size: 1.5rem;  position: absolute;  top: 5.8rem;  left: 5.6rem;}
+        .step .title-footer{font-size: 1rem;color: #c9c9c9;line-height: 2rem;font-weight: bolder;}
+        .step .active{color: #0060ff;}
+        .form{width: 40%;text-align: center;font-size: 1rem;margin: 5rem auto 0 auto;color: black;padding-bottom: 3rem;}
+        .form i{color: red;}
+        .sub-btn{margin-top: 2rem;}
+        .layui-form-label{width: 90px;}
+        .form input{width: 95%;}
+        .form .captcha{text-align: left;}
+        .form .sub-btn{width: 14rem;}
+    </style>
+
+    <div id="banner">
+        <div class="banner-img">
+            <div class="layui-container">
+                <div class="banner-content">个人注册<br>欢迎您注册美和国际物流个人用户</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-container">
+        <div class="content">
+            @for($i = 1;$i < 7; $i++)
+                @php
+                    $imgType = $nowStep >= $i ? '1' : '0'
+                @endphp
+                <div class="step layui-inline">
+                    <div><span class="title-header">{{$i}}</span><img src="{{asset('images/register-tip'.$imgType.'.png')}}"><span class="title-footer @if($nowStep >= $i) active @endif">{{$titles[$i-1]}}</span></div>
+                </div>
+            @endfor
+            <div class="form">
+                <form class="layui-form" action="">
+                    {{csrf_field()}}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登陆用户名<i>*</i></label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" required  lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码<i>*</i></label>
+                        <div class="layui-input-block">
+                            <input type="password" name="password" required  lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">确认密码<i>*</i></label>
+                        <div class="layui-input-block">
+                            <input type="password" name="confirm" required  lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">电子邮箱<i>*</i></label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email" required  lay-verify="required|email" lay-vertype="tips" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">姓<i>*</i></label>
+                        <div class="layui-input-block">
+                            <input type="text" name="xing" required  lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">名<i>*</i></label>
+                        <div class="layui-input-block">
+                            <input type="text" name="ming" required  lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">验证码<i>*</i></label>
+                        <div class="layui-input-block">
+                            <input type="text" name="verifycode" required  lay-verify="required" lay-vertype="tips" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-block">
+                            <div class="captcha">
+                                <img src="{{captcha_src()}}" onclick="this.src='{{captcha_src()}}'+Math.random()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <button class="layui-btn sub-btn" lay-submit lay-filter="do">下一步</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @include('common.footer')
+
+    <script>
+        layui.use(['form'], function(){
+            var form = layui.form
+                ,$ = layui.jquery;
+            form.on('submit(do)', function(data){
+                $.ajax({
+                    type : "POST",
+                    url : "{{url('/register/one/do')}}",
+                    data : data.field,
+                    dataType: 'json',
+                    success : function(result) {
+                        console.log(result);
+                    },
+                    error: function (error) {
+                        var errors = error.responseJSON.errors;
+                        if (errors.name || errors.password){
+                            layer.msg('用户名或密码错误');
+                        }else if (errors.verifycode){
+                            $("#captchaImg").attr('src','{{captcha_src()}}'+Math.random());
+                            layer.msg('验证码错误，请重新填写');
+                        }
+                    }
+                });
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+        });
+    </script>
+@endsection
